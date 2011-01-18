@@ -1,22 +1,20 @@
 uniform sampler2D tex;
 uniform float total_time;
+float pi = 2.0 * asin(1.0);
 
 float rand(float c){
     return sin(c);
-    return fract(sin(dot(c ,12.9898)) * 43758.5453);
 }
 
 vec2 rand(vec2 co){
-    return(vec2(sin(co.x), cos(co.y)));
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+    return vec2(sin(co.x), cos(co.y));
 }
 
 vec2 transformCoord(vec2 orig) {
     //orig *= total_time;
-    vec2 r = 2 * total_time * orig;
-    float f = 0.05;
-    return orig + vec2( f * rand(r).x*orig.x,
-    f * rand(r).x * orig.x);
+    vec2 r = 10.0 * sin(total_time) * orig;
+    float f = 0.04;
+    return orig + vec2(f*rand(r).x, f*rand(r).y);
 }
 
 void main() {
