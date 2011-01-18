@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-extras/")
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 
-find_package(SFML REQUIRED)
+find_package(SFML COMPONENTS window graphics system REQUIRED)
 find_package(Boost COMPONENTS filesystem system python date_time REQUIRED)
 
 add_definitions(-Wall -Wextra -g -pedantic -fPIC -std=c++0x)
