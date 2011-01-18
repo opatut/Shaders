@@ -1,5 +1,7 @@
 uniform sampler2D tex;
 uniform float total_time;
+float speed = 1.0;
+float fac = 0.02;
 float pi = 2.0 * asin(1.0);
 
 float rand(float c){
@@ -11,13 +13,14 @@ vec2 rand(vec2 co){
 }
 
 vec2 transformCoord(vec2 orig) {
-    //orig *= total_time;
-    float r = 2.0 * total_time; //* vec2(orig.x - 0.5, orig.y - 0.5);
+    // has to repeat over time [0..1]
+	float r = sin(speed * total_time);
 
-    float f = 0.04;
-    return orig 
-        + vec2( f*rand(r)*sin(mod(orig.x * 10, 1)-0.5), 
-                f*rand(r)*sin(mod(orig.y * 10, 1)-0.5));
+	vec2 co = orig - vec2(0.5, 0.5);
+
+	vec2 new_orig = vec2(r * sin( cos(co.x * 10 - 1.0) + total_time),
+						 r * sin( cos(co.y * 10 + 1.0) + total_time));
+	return orig + fac * new_orig;
 }
 
 void main() {

@@ -13,6 +13,7 @@ bool die(std::string msg) {
 
 int main() {
 	sf::RenderWindow app(sf::VideoMode(800,600,32), "Shaders", sf::Style::Close | sf::Style::Resize);
+	app.SetFramerateLimit(60);
 
 	sf::Shader shader;
 	shader.LoadFromFile("../data/underwater.glsl")
