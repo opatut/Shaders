@@ -12,7 +12,7 @@ vec2 rand(vec2 co){
 
 vec2 transformCoord(vec2 orig) {
     //orig *= total_time;
-    vec2 r = 10.0 * sin(total_time) * orig;
+    vec2 r = 10.0 * total_time* vec2(orig.x - 0.5, orig.y - 0.5);
     float f = 0.04;
     return orig + vec2(f*rand(r).x, f*rand(r).y);
 }
