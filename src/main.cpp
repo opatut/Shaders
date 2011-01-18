@@ -52,7 +52,10 @@ int main() {
 		}
 
         app.Clear();
-        app.Draw(sprite, shader);
+        if(shader_enabled)
+            app.Draw(sprite, shader);
+        else
+            app.Draw(sprite);
         app.Display();
 
 
