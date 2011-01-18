@@ -6,8 +6,8 @@ float rand(float c){
     return fract(sin(dot(c ,12.9898)) * 43758.5453);
 }
 
-float rand(vec2 co){
-    return(sin(co));
+vec2 rand(vec2 co){
+    return(vec2(sin(co.x), cos(co.y)));
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
@@ -15,8 +15,8 @@ vec2 transformCoord(vec2 orig) {
     //orig *= total_time;
     vec2 r = 2 * total_time * orig;
     float f = 0.05;
-    return orig + vec2( f * rand(r)*orig[0],
-    f * rand(r) * orig[1]);
+    return orig + vec2( f * rand(r).x*orig.x,
+    f * rand(r).x * orig.x);
 }
 
 void main() {
