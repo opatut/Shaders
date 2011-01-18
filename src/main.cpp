@@ -28,7 +28,16 @@ int main() {
 
 	bool shader_enabled = true;
 
+    sf::Clock clock;
+    float time;
+
 	while(app.IsOpened()) {
+        float time_delta = clock.GetElapsedTime();
+        clock.Reset();
+        time += time_delta;
+        
+        shader.SetParameter("total_time", time);
+
 		sf::Event event;
 		while(app.GetEvent(event)) {
 			if(event.Type == sf::Event::Closed) {

@@ -1,8 +1,8 @@
 uniform sampler2D tex;
-uniform float time;
+uniform float total_time;
 
 vec2 transformCoord(vec2 orig) {
-    orig *= 5;
+    orig *= total_time;
     orig = mod(orig, 1.0);
     return orig;
 }
