@@ -12,7 +12,7 @@ bool die(std::string msg) {
 }
 
 int main() {
-	sf::RenderWindow app(sf::VideoMode(800,600,32), "Shaders", sf::Style::Close | sf::Style::Resize);
+	sf::RenderWindow app(sf::VideoMode::GetDesktopMode(), "Shaders", sf::Style::Fullscreen);
 	app.SetFramerateLimit(60);
 
 	sf::Shader shader;
@@ -24,8 +24,8 @@ int main() {
 	image.LoadFromFile("../data/underwater.jpg")
 			|| die("Image not found or loading failed.");
 
-    sf::Sprite sprite(image);
-    sprite.Resize(800,600);
+	sf::Sprite sprite(image);
+	sprite.Resize(app.GetWidth(),app.GetHeight());
 
 	bool shader_enabled = true;
 
@@ -53,10 +53,13 @@ int main() {
 		}
 
         app.Clear();
-        if(shader_enabled)
-            app.Draw(sprite, shader);
-        else
-            app.Draw(sprite);
+		if(shader_enabled) {
+			app.Draw(sprite, shader);
+		} else {
+			app.Draw(sprite);
+		}
+
+
         app.Display();
 
 

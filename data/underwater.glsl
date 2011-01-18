@@ -1,7 +1,7 @@
 uniform sampler2D tex;
 uniform float total_time;
-float speed = 1.0;
-float fac = 0.02;
+float speed = 0.5;
+float fac = 0.01;
 float pi = 2.0 * asin(1.0);
 
 float rand(float c){
