@@ -1,5 +1,6 @@
 uniform sampler2D tex;
 uniform float total_time;
+bool infinite = true;
 
 float PI = 2.0 * asin(1.0);
 
@@ -20,30 +21,21 @@ WaveEmitter emitter[3];
 
 float GetPhase(vec2 point, WaveEmitter emit, float time) {
 	float distance = sqrt( pow(point.x - emit.mPosition.x,2) + pow(point.y - emit.mPosition.y, 2) );
-	if (distance / emit.mVelocity >= time) {
+	if (!infinite && distance / emit.mVelocity >= time) {
 		return 0.0;
 	} else {
 		return sin((time / emit.GetPeriodTime() - distance / emit.mWavelength) * 2 * PI);
 	}
 }
 
-/*float rand(float c){
-    return sin(c);
-}
-
-vec2 rand(vec2 co){
-    return vec2(sin(co.x), cos(co.y));
-}*/
-
 vec2 transformCoord(vec2 orig) {
-	float fac = 0;
-	float a = 0;
+	vec2 final = orig;
 	for(int i = 0; i < emitter_size; ++i) {
-		fac += GetPhase(orig, emitter[i], total_time) * emitter[i].mAmplitude;
-		a = emitter[i].mAmplitude;
+		vec2 rel = orig - emitter[i].mPosition;
+		float fac = GetPhase(orig, emitter[i], total_time) * emitter[i].mAmplitude;
+		final += fac * rel;
 	}
-	fac = (fac / a + 1.0)/2.0;
-	return orig + 0.01 * fac * vec2(0.5,0.5);
+	return final;
 }
 
 vec4 transformColor(vec4 c, vec2 p) {
@@ -59,24 +51,24 @@ vec4 transformColor(vec4 c, vec2 p) {
 
 void main() {
 	WaveEmitter emit0;
-	emit0.mPosition = vec2(0.7,1.4);
-	emit0.mAmplitude = 0.01;
-	emit0.mVelocity = 0.1;
-	emit0.mWavelength = 0.3;
+	emit0.mPosition = vec2(0.1,0.7);
+	emit0.mAmplitude = 0.005;
+	emit0.mVelocity = 0.06;
+	emit0.mWavelength = 0.7;
 	emitter[0] = emit0;
 
 	WaveEmitter emit1;
-	emit1.mPosition = vec2(0.8,-0.3);
-	emit1.mAmplitude = 0.01;
-	emit1.mVelocity = 0.15;
-	emit1.mWavelength = 0.3;
+	emit1.mPosition = vec2(0.8,-0.1);
+	emit1.mAmplitude = 0.005;
+	emit1.mVelocity = 0.07;
+	emit1.mWavelength = 0.6;
 	emitter[1] = emit1;
 
 	WaveEmitter emit2;
-	emit2.mPosition = vec2(-0.1,0.6);
-	emit2.mAmplitude = 0.01;
+	emit2.mPosition = vec2(1.1,0.9);
+	emit2.mAmplitude = 0.005;
 	emit2.mVelocity = 0.05;
-	emit2.mWavelength = 0.1;
+	emit2.mWavelength = 0.8;
 	emitter[2] = emit2;
 
 	vec2 coord = transformCoord(gl_TexCoord[0].st);
