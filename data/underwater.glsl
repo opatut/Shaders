@@ -2,6 +2,8 @@ uniform sampler2D tex;
 uniform float total_time;
 float speed = 0.5;
 float fac = 0.01;
+float point_size = 3.0;
+vec2 points[3];
 
 // advanced settings
 float amplitude = 0.01;	// factor of final displacement
@@ -43,10 +45,18 @@ vec2 transformCoord(vec2 orig) {
 }*/
 
 vec4 transformColor(vec4 c, vec2 p) {
-	return c * GetPhase(p, vec2(0.5,0.5), total_time);
+	float fac = 0;
+	for(int i = 0; i < point_size; ++i) {
+		fac += GetPhase(p, points[i], total_time) / point_size;
+	}
+	return c * fac;
 }
 
 void main() {
+
+	points[0] = vec2(0.2,0.2);
+	points[1] = vec2(0.8,0.3);
+	points[2] = vec2(0.1,0.6);
 	//vec2 coord = transformCoord(gl_TexCoord[0].st);
 	vec2 coord = gl_TexCoord[0].st;
 	gl_FragColor = transformColor(texture2D(tex, coord), coord);
