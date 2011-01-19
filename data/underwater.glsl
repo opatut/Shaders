@@ -33,25 +33,28 @@ float GetPhase(vec2 point, WaveEmitter emit, float time) {
 
 vec2 rand(vec2 co){
     return vec2(sin(co.x), cos(co.y));
-}
+}*/
 
 vec2 transformCoord(vec2 orig) {
-    // has to repeat over time [0..1]
-	float r = sin(speed * total_time);
-
-	vec2 co = orig - vec2(0.5, 0.5);
-
-	vec2 new_orig = vec2(r * sin( cos(co.x * 10 - 1.0) + total_time),
-						 r * sin( cos(co.y * 10 + 1.0) + total_time));
-	return orig + fac * new_orig;
-}*/
+	float fac = 0;
+	float a = 0;
+	for(int i = 0; i < emitter_size; ++i) {
+		fac += GetPhase(orig, emitter[i], total_time) * emitter[i].mAmplitude;
+		a = emitter[i].mAmplitude;
+	}
+	fac = (fac / a + 1.0)/2.0;
+	return orig + 0.01 * fac * vec2(0.5,0.5);
+}
 
 vec4 transformColor(vec4 c, vec2 p) {
 	float fac = 0;
+	float a = 0;
 	for(int i = 0; i < emitter_size; ++i) {
-		fac += GetPhase(p, emitter[i], total_time + 100) / emitter_size;
+		fac += GetPhase(p, emitter[i], total_time) * emitter[i].mAmplitude;
+		a = emitter[i].mAmplitude;
 	}
-	return c * (fac+1.0)/2;
+	fac = (fac / a + 1.0)/2.0;
+	return c * fac;
 }
 
 void main() {
@@ -76,7 +79,8 @@ void main() {
 	emit2.mWavelength = 0.1;
 	emitter[2] = emit2;
 
-	//vec2 coord = transformCoord(gl_TexCoord[0].st);
-	vec2 coord = gl_TexCoord[0].st;
-	gl_FragColor = transformColor(texture2D(tex, coord), coord);
+	vec2 coord = transformCoord(gl_TexCoord[0].st);
+	//vec2 coord = gl_TexCoord[0].st;
+	//gl_FragColor = transformColor(texture2D(tex, coord), coord);
+	gl_FragColor = texture2D(tex, coord), coord;
 }
