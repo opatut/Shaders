@@ -1,27 +1,29 @@
 uniform sampler2D tex;
 uniform float total_time;
-float speed = 0.5;
-float fac = 0.01;
-float point_size = 3.0;
-vec2 points[3];
 
-// advanced settings
-float amplitude = 0.01;	// factor of final displacement
-float velocity = 0.1;	// screens per second
-float wavelength = 0.1;		// screens
+float PI = 2.0 * asin(1.0);
 
-// calculated values
-float period_time = wavelength / velocity;
-float frequency = 1.0 / period_time;
+struct WaveEmitter {
+	vec2 mPosition; // = vec2(0.5, 0.5);
+	float mAmplitude; // = 0.01;	// factor of final displacement
+	float mVelocity; // = 0.05;		// screens per second
+	float mWavelength; // = 0.3;	// screens
 
-float pi = 2.0 * asin(1.0);
+	float GetPeriodTime() {
+		return mWavelength / mVelocity;
+	}
+};
 
-float GetPhase(vec2 point1, vec2 point2, float time) {
-	float distance = sqrt( pow(point1.x - point2.x,2) + pow(point1.y - point2.y, 2) );
-	if (distance / velocity >= time) {
+float emitter_size = 3.0;
+WaveEmitter emitter[3];
+
+
+float GetPhase(vec2 point, WaveEmitter emit, float time) {
+	float distance = sqrt( pow(point.x - emit.mPosition.x,2) + pow(point.y - emit.mPosition.y, 2) );
+	if (distance / emit.mVelocity >= time) {
 		return 0.0;
 	} else {
-		return sin((time / period_time - distance / wavelength) * 2 * pi);
+		return sin((time / emit.GetPeriodTime() - distance / emit.mWavelength) * 2 * PI);
 	}
 }
 
@@ -46,17 +48,34 @@ vec2 transformCoord(vec2 orig) {
 
 vec4 transformColor(vec4 c, vec2 p) {
 	float fac = 0;
-	for(int i = 0; i < point_size; ++i) {
-		fac += GetPhase(p, points[i], total_time) / point_size;
+	for(int i = 0; i < emitter_size; ++i) {
+		fac += GetPhase(p, emitter[i], total_time + 100) / emitter_size;
 	}
-	return c * fac;
+	return c * (fac+1.0)/2;
 }
 
 void main() {
+	WaveEmitter emit0;
+	emit0.mPosition = vec2(0.7,1.4);
+	emit0.mAmplitude = 0.01;
+	emit0.mVelocity = 0.1;
+	emit0.mWavelength = 0.3;
+	emitter[0] = emit0;
 
-	points[0] = vec2(0.2,0.2);
-	points[1] = vec2(0.8,0.3);
-	points[2] = vec2(0.1,0.6);
+	WaveEmitter emit1;
+	emit1.mPosition = vec2(0.8,-0.3);
+	emit1.mAmplitude = 0.01;
+	emit1.mVelocity = 0.15;
+	emit1.mWavelength = 0.3;
+	emitter[1] = emit1;
+
+	WaveEmitter emit2;
+	emit2.mPosition = vec2(-0.1,0.6);
+	emit2.mAmplitude = 0.01;
+	emit2.mVelocity = 0.05;
+	emit2.mWavelength = 0.1;
+	emitter[2] = emit2;
+
 	//vec2 coord = transformCoord(gl_TexCoord[0].st);
 	vec2 coord = gl_TexCoord[0].st;
 	gl_FragColor = transformColor(texture2D(tex, coord), coord);
